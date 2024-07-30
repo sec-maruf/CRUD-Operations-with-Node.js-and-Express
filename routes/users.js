@@ -31,14 +31,29 @@ router.get("/",(req,res)=>{
   res.send(JSON.stringify({users}, null, 4))//This line is to be replaced with actual return value
 });
 
-// GET by specific ID request: Retrieve a single user with email ID
-router.get("/:email",(req,res)=>{
-  const email = req.params.email;
-  let filtered_users= users.filter((user) => user.email === email);
+function getDateFromString(strDate){
+    let [dd, mm, yyyy] = strDate.split("-");
+    return new Date(yyyy + "/" + mm + "/" + dd);  // Using hyphens for better compatibility with Date constructor
+}
 
-  res.send(JSON.stringify({filtered_users}, null, 4))//This line is to be replaced with actual return value
+router.get("/sort", (req, res) => {
+    let sorted_users = users.sort((a, b) => {
+        let d1 = getDateFromString(a.DOB);
+        let d2 = getDateFromString(b.DOB);
+        return d1 - d2;
+    });
+
+    res.send(sorted_users);  // Wrap the sorted users in an object
 });
 
+// GET by specific ID request: Retrieve a single user with email ID
+router.get("/:email",(req,res)=>{
+    const email = req.params.email;
+    let filtered_users= users.filter((user) => user.email === email);
+  
+    res.send(filtered_users);//This line is to be replaced with actual return value
+  });
+  
 
 // POST request: Create a new user
 router.post("/",(req,res)=>{
@@ -95,19 +110,6 @@ router.get("/lastName/:lastName",(req,res)=>{
   });
   
   
-  function getDateFromString(strDate){
-    let [dd, mm, yyyy] = strDate.split("-");
-    return new Date(yyyy + "/" + mm + "/" + dd);  // Using hyphens for better compatibility with Date constructor
-}
-
-router.get("/sort", (req, res) => {
-    let sorted_users = users.sort((a, b) => {
-        let d1 = getDateFromString(a.DOB);
-        let d2 = getDateFromString(b.DOB);
-        return d1 - d2;
-    });
-
-    res.send(sorted_users);  // Wrap the sorted users in an object
-});
+  
 
 module.exports=router;
