@@ -23,6 +23,8 @@ let users = [
     },
 ];
 
+
+
 // GET request: Retrieve all users
 router.get("/",(req,res)=>{
   // Copy the code here
@@ -82,6 +84,30 @@ router.delete("/:email", (req, res) => {
   const email = req.params.email;
   users= users.filter((user)=>user.email!=email);
   res.send("The user with "+email+" has been deleted succesfully")//This line is to be replaced with actual return value
+});
+
+// GET request: Retrieve all users lastname
+router.get("/lastName/:lastName",(req,res)=>{
+    // Copy the code here
+    const lastName = req.params.lastName;
+    filtered_user_lastname = users.filter((user) => user.lastName === lastName);
+    res.send(filtered_user_lastname);
+  });
+  
+  
+  function getDateFromString(strDate){
+    let [dd, mm, yyyy] = strDate.split("-");
+    return new Date(yyyy + "/" + mm + "/" + dd);  // Using hyphens for better compatibility with Date constructor
+}
+
+router.get("/sort", (req, res) => {
+    let sorted_users = users.sort((a, b) => {
+        let d1 = getDateFromString(a.DOB);
+        let d2 = getDateFromString(b.DOB);
+        return d1 - d2;
+    });
+
+    res.send(sorted_users);  // Wrap the sorted users in an object
 });
 
 module.exports=router;
